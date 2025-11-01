@@ -1,0 +1,18 @@
+# Core framework
+fastapi==0.115.0
+uvicorn==0.32.0
+
+# Sentence embedding (with CUDA)
+torch==2.4.1+cu121
+sentence-transformers==3.1.1
+transformers>=4.44.0
+numpy>=1.26.0
+
+# GPU FAISS build
+faiss-gpu==1.8.0.post2
+
+# For making HTTP requests to LLM API
+requests>=2.32.0
+
+# Optional but helpful utilities
+pydantic==2.8.2
