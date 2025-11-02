@@ -69,9 +69,10 @@ model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2", device="cp
 
 @app.on_event("startup")
 def load_index():
-    global index, chunks_dict
+    global index, chunks_dict, indexes_dict
     index = None
     chunks_dict = {}
+    indexes_dict = {}
     
     # Print GPU info on startup
     if torch.cuda.is_available():
@@ -137,32 +138,43 @@ def chunk_text(text: str, chunk_size: int = 500, overlap: int = 50) -> list[str]
 
 @app.post("/get-answer")
 def get_answer(query: Query):
-    meeting_id = "timscdr_full_profile"  # Default meeting ID
     question = query.question
 
     try:
-        global index, chunks_dict
-        if meeting_id not in chunks_dict:
-            idx_path = f"faiss_indexes/{meeting_id}.index"
-            chunks_path = f"faiss_indexes/{meeting_id}_chunks.json"
-            if not os.path.exists(idx_path) or not os.path.exists(chunks_path):
-                raise HTTPException(status_code=404, detail="Meeting data not found")
-            index = faiss.read_index(idx_path)
-            with open(chunks_path, "r") as f:
-                chunks_dict[meeting_id] = json.load(f)
+        global indexes_dict, chunks_dict
+        relevant_chunks = []
         
-        chunks = chunks_dict[meeting_id]
+        # Get all available meeting IDs from faiss_indexes directory
+        faiss_dir = "faiss_indexes"
+        if os.path.exists(faiss_dir):
+            for filename in os.listdir(faiss_dir):
+                if filename.endswith(".index"):
+                    meeting_id = filename[:-6]  # remove .index
+                    if meeting_id not in chunks_dict:
+                        idx_path = f"{faiss_dir}/{meeting_id}.index"
+                        chunks_path = f"{faiss_dir}/{meeting_id}_chunks.json"
+                        if os.path.exists(idx_path) and os.path.exists(chunks_path):
+                            indexes_dict[meeting_id] = faiss.read_index(idx_path)
+                            with open(chunks_path, "r") as f:
+                                chunks_dict[meeting_id] = json.load(f)
+                    
+                    if meeting_id in chunks_dict:
+                        chunks = chunks_dict[meeting_id]
+                        current_index = indexes_dict[meeting_id]
+                        question_embedding = model.encode([question]).astype("float32")
+                        D, I = current_index.search(question_embedding, k=3)
+                        relevant_chunks.extend([chunks[i] for i in I[0]])
         
-        question_embedding = model.encode([question]).astype("float32")
-        D, I = index.search(question_embedding, k=3)
-        relevant_chunks = [chunks[i] for i in I[0]]
+        if not relevant_chunks:
+            raise HTTPException(status_code=404, detail="No relevant data found")
+        
         context = "\n".join(relevant_chunks)
         
         prompt = f"""
 You are a helpful assistant for TIMSCDR (Thakur Institute of Management Studies, Career Development & Research, Kandivali East, Mumbai).
 You must answer ONLY based on the context given.
 If the answer is not in the context, reply exactly:
-"I'm sorry, I can only answer questions about TIMSCDR."
+"I'm sorry, I can't answer that, ask me questions about TIMSCDR."
 
 Question: {question}
 
