@@ -8,8 +8,8 @@ sentence-transformers==3.1.1
 transformers>=4.44.0
 numpy>=1.26.0
 
-# GPU FAISS build
-faiss-gpu==1.8.0.post2
+# CPU FAISS build
+faiss-cpu==1.8.0.post2
 
 # For making HTTP requests to LLM API
 requests>=2.32.0

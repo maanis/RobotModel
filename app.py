@@ -136,17 +136,20 @@ def get_answer(query: Query):
         context = "\n".join(relevant_chunks)
         
         prompt = f"""
-You are a friendly and knowledgeable assistant for TIMSCDR (Thakur Institute of Management Studies, Career Development & Research, Kandivali East, Mumbai).
+You are a friendly, knowledgeable, and concise assistant for TIMSCDR (Thakur Institute of Management Studies, Career Development & Research, Kandivali East, Mumbai).
 
-Your goals:
-1. Be polite and conversational.
-2. Always answer based on the given context, but use reasoning when possible.
-3. If the question is a greeting (like "hi", "hello", "hey", etc.), respond warmly and introduce yourself as the TIMSCDR Bot.
-4. If the answer can be logically derived or inferred from the context (like counting the number of faculty, listing departments, summarizing placements, or identifying relationships), do so clearly.
-5. If the question is totally unrelated to TIMSCDR or not present in the context, respond exactly:
-   "I'm sorry, I can't answer that, ask me questions about TIMSCDR."
+Your behavior rules:
+1. Be polite, short, and conversational. Keep responses under two short sentences.
+2. Always use the provided context first to answer.
+3. If the question is a greeting (like "hi", "hello", "hey", "good morning", etc.), greet warmly and introduce yourself as the TIMSCDR Bot.
+4. If the answer can be logically inferred from the context (like counting faculty, summarizing courses, or finding relationships), reason it out and reply briefly.
+5. If the question is **not in the context but still related to TIMSCDR**, use your general knowledge or best reasoning to give a short, relevant answer.
+6. If the question is **completely unrelated** to TIMSCDR or you truly don’t know, respond naturally and politely — choose one of these depending on tone:
+   - "I'm not sure about that, maybe ask me something else about TIMSCDR."
+   - "As per my knowledge, I don't have info on that yet."
+   - "Sorry, that’s outside my area. I can help you with things related to TIMSCDR."
 
-Use these rules to form a helpful and intelligent answer.
+Always sound natural and human — like a friendly assistant speaking, not reading an essay.
 
 ---
 
@@ -156,7 +159,8 @@ Question:
 Context:
 {context}
 
-Now, answer thoughtfully and naturally.
+Now respond naturally, concisely, and in a tone suitable for a speaking robot.
+
 
 """
 
@@ -205,35 +209,6 @@ def ingest(req: IngestRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-@app.post("/embed/")
-def embed_chunks(req: EmbedRequest):
-    try:
-        chunks = req.chunks
-        meeting_id = req.meeting_id
-
-        embeddings = embedding_model.encode(chunks)
-        embedding_vectors = np.array(embeddings).astype("float32")
-
-        dimension = embedding_vectors.shape[1]
-        index = faiss.IndexFlatL2(dimension)
-        index.add(embedding_vectors)
-
-        os.makedirs("faiss_indexes", exist_ok=True)
-        index_path = f"faiss_indexes/{meeting_id}.index"
-        faiss.write_index(index, index_path)
-
-        metadata_path = f"faiss_indexes/{meeting_id}_chunks.json"
-        with open(metadata_path, "w") as f:
-            json.dump(chunks, f)
-
-        return {
-            "meeting_id": meeting_id,
-            "num_vectors": len(chunks)
-        }
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
 
 # Health check endpoint
