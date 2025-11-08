@@ -7,7 +7,6 @@ import numpy as np
 import json
 import os
 import requests
-import whisper
 import tempfile
 import traceback
 import time
@@ -15,10 +14,7 @@ import psutil
 import torch
 from functools import wraps
 from pydantic import BaseModel
-from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound
-from yt_dlp.utils import DownloadError
-from yt_dlp import YoutubeDL
-from pytube import YouTube
+
 
 app = FastAPI()
 
@@ -94,37 +90,6 @@ class IngestRequest(BaseModel):
     id: str
     text: str
 
-def merge_transcript_chunks(transcript, max_duration=10):
-    merged = []
-    current_chunk = {
-        "start": None,
-        "end": None,
-        "text": "",
-    }
-
-    for item in transcript:
-        if current_chunk["start"] is None:
-            current_chunk["start"] = item["start"]
-            current_chunk["end"] = item["end"]
-            current_chunk["text"] = item["text"]
-        else:
-            # Check if adding this item exceeds max duration
-            if item["end"] - current_chunk["start"] <= max_duration:
-                current_chunk["end"] = item["end"]
-                current_chunk["text"] += " " + item["text"]
-            else:
-                merged.append(current_chunk)
-                # start new chunk
-                current_chunk = {
-                    "start": item["start"],
-                    "end": item["end"],
-                    "text": item["text"],
-                }
-
-    if current_chunk["text"]:
-        merged.append(current_chunk)
-
-    return merged
 
 def chunk_text(text: str, chunk_size: int = 500, overlap: int = 50) -> list[str]:
     chunks = []
