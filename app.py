@@ -171,20 +171,31 @@ def get_answer(query: Query):
         context = "\n".join(relevant_chunks)
         
         prompt = f"""
-You are a helpful assistant for TIMSCDR (Thakur Institute of Management Studies, Career Development & Research, Kandivali East, Mumbai).
-You must answer ONLY based on the context given.
-If the answer is not in the context, reply exactly:
-"I'm sorry, I can't answer that, ask me questions about TIMSCDR."
+You are a friendly and knowledgeable assistant for TIMSCDR (Thakur Institute of Management Studies, Career Development & Research, Kandivali East, Mumbai).
 
-Question: {question}
+Your goals:
+1. Be polite and conversational.
+2. Always answer based on the given context, but use reasoning when possible.
+3. If the question is a greeting (like "hi", "hello", "hey", etc.), respond warmly and introduce yourself as the TIMSCDR Bot.
+4. If the answer can be logically derived or inferred from the context (like counting the number of faculty, listing departments, summarizing placements, or identifying relationships), do so clearly.
+5. If the question is totally unrelated to TIMSCDR or not present in the context, respond exactly:
+   "I'm sorry, I can't answer that, ask me questions about TIMSCDR."
+
+Use these rules to form a helpful and intelligent answer.
+
+---
+
+Question:
+{question}
 
 Context:
 {context}
 
+Now, answer thoughtfully and naturally.
 
 """
 
-        GEMINI_URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyBJrJArjXtRDjf5oVx3tG86EAZHIf1MhqE"
+        GEMINI_URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyAgpkdgLl-Z3tt1MgyHuJs6Nz39KRq-RFU"
         payload = {
             "contents": [{"role": "user", "parts": [{"text": prompt}]}]
         }
