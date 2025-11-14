@@ -191,7 +191,9 @@ class IngestRequest(BaseModel):
     text: str
 ```
 
----
+## seed_from_json.py --input implementation_seed.json --mode local
+
+## .\venv\Scripts\python.exe .\ingest_faculty.py
 
 ## Error Handling
 

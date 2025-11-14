@@ -1,0 +1,3 @@
+[
+  "TIRA is built using IoT with integration of Artificial Intelligence using Raspberry Pi, speech recognition, and conversational RAG model. The software stack includes Python, FastAPI, Gemini API, FAISS, and Sentence Transformers. The hardware components are Raspberry Pi, Microphone, Speaker, and Power Supply."
+]

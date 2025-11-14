@@ -1,0 +1,70 @@
+{
+  "id": "implementated_by_coding_club",
+  "project": {
+    "title": "Welcome Bot (TIRA - TIMSCDR Intelligent Robot Assistant)",
+    "institute": "Thakur Institute of Management Studies, Career Development & Research (TIMSCDR)",
+    "department": "Master of Computer Applications (MCA)",
+    "academic_year": "2025",
+    "developed_by": "Coding Club 2025",
+    "robot_name": "TIRA",
+    "description": "TIRA (TIMSCDR Intelligent Robot Assistant) is an interactive information assistant designed to provide real-time details about the institute’s courses, departments, events, and achievements. The robot uses AI with voice-based interaction to answer questions related to TIMSCDR and assist students and visitors efficiently.",
+    "technology_used": {
+      "iot": true,
+      "ai": true,
+      "description": "IoT with integration of Artificial Intelligence using Raspberry Pi, speech recognition, and conversational RAG model."
+    },
+    "applications": [
+      "Acts as an interactive information assistant that provides real-time institute updates.",
+      "Helps automate front-desk query handling using voice commands.",
+      "Provides AI-based context-aware responses regarding faculty, courses, and college events.",
+      "Demonstrates integration of IoT, AI, and NLP technologies in a real-world educational setup."
+    ],
+    "team": {
+      "project_management": ["Samika Yadav", "Jyoti Yadav"],
+      "ai_implementation": ["Manish Jha", "Jyoti Jayant"],
+      "iot_integration": [
+        "Atish Ghanekar",
+        "Himanshu Pandey",
+        "Vishal Tiwari",
+        "Neeraj Yadav"
+      ],
+      "structure_design": [
+        "Vaibhav Behera",
+        "Harshit Ghawale",
+        "Srushti More",
+        "Gaurav Dixit",
+        "Pankaj Gupta"
+      ],
+      "documentation_and_poster": [
+        "Vijay Gaud",
+        "Shresha Ghadi",
+        "Devesh Ghadigonkar"
+      ]
+    },
+    "supervised_by": "Coding Club, TIMSCDR",
+    "contact_info": {
+      "address": "Thakur Educational Campus, Shyamnarayan Thakur Marg, Thakur Village, Kandivali (East), Mumbai - 400101, Maharashtra, India",
+      "website": "https://www.timscdrmumbai.in",
+      "phone": ["022-2884 0484", "022-6730 8301"],
+      "email": "timscdr@thakureducation.org"
+    },
+    "prototype": {
+      "hardware": ["Raspberry Pi", "Microphone", "Speaker", "Power Supply"],
+      "software_stack": [
+        "Python",
+        "FastAPI",
+        "Gemini API",
+        "FAISS",
+        "Sentence Transformers"
+      ]
+    },
+    "ai_behavior": {
+      "greeting_response": "Hey there! I'm TIRA, your friendly TIMSCDR Bot. How can I help you today?",
+      "out_of_context_response": [
+        "I'm not sure about that, but you can ask me anything related to TIMSCDR!",
+        "As per my knowledge, I don't have info on that yet. Want to know about the institute?",
+        "Sorry, that’s outside my knowledge. I can help with TIMSCDR-related queries instead."
+      ]
+    }
+  }
+}
